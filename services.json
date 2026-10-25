@@ -1,0 +1,13 @@
+{
+  "services": [
+    { "name": "Underarm waxing", "price": "€25", "duration": "20 minutes" },
+    { "name": "Leg waxing", "price": "€45", "duration": "40 minutes" },
+    { "name": "Lash lifting", "price": "€60", "duration": "60 minutes" }
+  ],
+  "policies": {
+    "opening_hours": "Monday to Friday, 10:00 to 18:00",
+    "cancellation": "Appointments can be cancelled up to 24 hours before.",
+    "medical_questions": "Please refer medical questions to the studio team.",
+    "complaints": "Please refer complaints to the studio team."
+  }
+}
