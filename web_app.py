@@ -11,6 +11,7 @@ from assistant import reply_to
 
 
 MAX_MESSAGE_LENGTH = 5000
+logger = logging.getLogger("test_studio.web")
 
 
 def render_page(message: str = "", error: str = "", history: list = ()) -> bytes:
@@ -85,14 +86,18 @@ def parse_history(raw: str) -> list:
 
 class InquiryHandler(BaseHTTPRequestHandler):
     def send_html(self, body: bytes, status: int = 200) -> None:
-        self.send_response(status)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.send_response(status)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            # A browser tab may close or reload while Groq is generating a reply.
+            logger.debug("Browser disconnected before the response finished")
 
     def do_GET(self) -> None:
         if self.path != "/":
